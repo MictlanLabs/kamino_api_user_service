@@ -5,12 +5,17 @@ dotenv.config({ quiet: true });
 
 const { Pool } = pg;
 
-export const pool = new Pool({
+// Database configuration object for Sequelize
+const databaseConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
+  database: process.env.DB_NAME
+};
+
+export const pool = new Pool({
+  ...databaseConfig,
   ssl: {
     rejectUnauthorized: false
   },
@@ -41,3 +46,6 @@ export const testConnection = async () => {
     if (client) client.release();
   }
 };
+
+// Export database configuration as default for Sequelize
+export default databaseConfig;
