@@ -92,11 +92,6 @@ const options = {
             lastName: {
               type: 'string',
               example: 'Pérez'
-            },
-            role: {
-              type: 'string',
-              enum: ['USER', 'ADMIN'],
-              example: 'USER'
             }
           }
         },
@@ -145,6 +140,5 @@ const options = {
   },
   apis: ['./src/infrastructure/adapters/input/routes/*.js']
 };
-
 
 export default swaggerJsdoc(options);

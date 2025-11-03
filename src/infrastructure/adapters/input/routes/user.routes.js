@@ -39,6 +39,40 @@ export const createUserRoutes = (userController) => {
 
   /**
    * @swagger
+   * /api/users:
+   *   get:
+   *     summary: Obtener todos los usuarios (solo administradores)
+   *     tags: [Users]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Lista de todos los usuarios
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/User'
+   *       401:
+   *         description: No autenticado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *       403:
+   *         description: Sin permisos de administrador
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   */
+  router.get('/', authMiddleware, adminMiddleware, (req, res, next) => 
+    userController.getAllUsers(req, res, next)
+  );
+
+  /**
+   * @swagger
    * /api/users/admin-only:
    *   get:
    *     summary: Ruta solo para administradores

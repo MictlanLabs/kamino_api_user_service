@@ -90,4 +90,23 @@ export class PostgresUserRepository {
     const result = await pool.query(query, [token]);
     return result.rows.length > 0 ? result.rows[0] : null;
   }
+
+  
+async findAll() {
+  const query = 'SELECT * FROM users ORDER BY created_at DESC';
+  const result = await pool.query(query);
+
+  return result.rows.map(row => new User({
+    id: row.id,
+    email: row.email,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    password: row.password,
+    role: row.role,
+    isActive: row.is_active,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  }));
 }
+}
+

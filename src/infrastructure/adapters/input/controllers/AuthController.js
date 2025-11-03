@@ -1,10 +1,12 @@
 import { RegisterUseCase } from '../../../../application/use-cases/auth/RegisterUseCase.js';
+import { RegisterAdminUseCase } from '../../../../application/use-cases/auth/RegisterAdminUseCase.js';
 import { LoginUseCase } from '../../../../application/use-cases/auth/LoginUseCase.js';
 import { LogoutUseCase } from '../../../../application/use-cases/auth/LogoutUseCase.js';
 
 export class AuthController {
   constructor(userRepository, passwordHasher, tokenGenerator) {
     this.registerUseCase = new RegisterUseCase(userRepository, passwordHasher);
+    this.registerAdminUseCase = new RegisterAdminUseCase(userRepository, passwordHasher);
     this.loginUseCase = new LoginUseCase(userRepository, passwordHasher, tokenGenerator);
     this.logoutUseCase = new LogoutUseCase(userRepository);
   }
@@ -12,6 +14,15 @@ export class AuthController {
   async register(req, res, next) {
     try {
       const result = await this.registerUseCase.execute(req.body);
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async registerAdmin(req, res, next) {
+    try {
+      const result = await this.registerAdminUseCase.execute(req.body);
       res.status(201).json(result);
     } catch (error) {
       next(error);
