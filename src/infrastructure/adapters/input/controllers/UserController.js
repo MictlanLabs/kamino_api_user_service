@@ -4,9 +4,11 @@ import { UploadProfilePictureUseCase } from '../../../../application/use-cases/u
 import { UpdateProfilePictureUseCase } from '../../../../application/use-cases/user/UpdateProfilePictureUseCase.js';
 import { DeleteProfilePictureUseCase } from '../../../../application/use-cases/user/DeleteProfilePictureUseCase.js';
 import { ImageService } from '../../../services/ImageService.js';
+import sharp from 'sharp';
 
 export class UserController {
   constructor(userRepository) {
+    this.userRepository = userRepository;
     this.getUserProfileUseCase = new GetUserProfileUseCase(userRepository);
     this.getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
     const imageService = new ImageService();
@@ -19,7 +21,9 @@ export class UserController {
     try {
       const userId = req.user.userId;
       const result = await this.getUserProfileUseCase.execute(userId);
-      res.status(200).json(result);
+      const buffer = await this.userRepository.getProfilePicture(userId);
+      const profilePhotoUrl = buffer ? `${req.protocol}://${req.get('host')}/api/users/profile-picture` : null;
+      res.status(200).json({ ...result, profile_photo: profilePhotoUrl });
     } catch (error) {
       next(error);
     }
@@ -86,6 +90,24 @@ export class UserController {
       }
       const result = await this.deleteProfilePictureUseCase.execute({ userId });
       res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getProfilePicture(req, res, next) {
+    try {
+      const userId = req.user.userId;
+      const buffer = await this.userRepository.getProfilePicture(userId);
+      if (!buffer) {
+        const error = new Error('Foto de perfil no encontrada');
+        error.status = 404;
+        throw error;
+      }
+      const meta = await sharp(buffer).metadata();
+      const format = meta.format === 'png' ? 'image/png' : 'image/jpeg';
+      res.setHeader('Content-Type', format);
+      res.status(200).end(buffer);
     } catch (error) {
       next(error);
     }

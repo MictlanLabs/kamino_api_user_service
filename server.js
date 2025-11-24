@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    console.log('🚀 Starting Kamino User Service...');
+    console.log('Starting Kamino User Service...');
     
     // Test database connection
     await testConnection();
@@ -19,12 +19,15 @@ const startServer = async () => {
     const app = createApp();
     
     app.listen(PORT, () => {
-      console.log(`✅ Servidor corriendo en puerto ${PORT}`);
-      console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`📊 Base de datos inicializada correctamente`);
+      console.log(`Servidor corriendo en puerto ${PORT}`);
+      console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+      console.log('Base de datos inicializada correctamente');
+      const baseUrl = `http://localhost:${PORT}`;
+      console.log(`Server URL: ${baseUrl}`);
+      console.log(`Docs URL: ${baseUrl}/api-docs`);
     });
   } catch (error) {
-    console.error('❌ Error al iniciar el servidor:', error);
+    console.error('Error al iniciar el servidor:', error);
     process.exit(1);
   }
 };

@@ -33,7 +33,7 @@ export const createUserRoutes = (userController) => {
    *           application/json:
    *             schema:
    *               $ref: '#/components/schemas/Error'
-   */
+  */
   router.get('/profile', authMiddleware, (req, res, next) => 
     userController.getProfile(req, res, next)
   );
@@ -219,6 +219,43 @@ export const createUserRoutes = (userController) => {
    */
   router.delete('/:id/profile-picture', authMiddleware, (req, res, next) =>
     userController.deleteProfilePicture(req, res, next)
+  );
+
+  /**
+   * @swagger
+   * /api/users/profile-picture:
+   *   get:
+   *     summary: Obtener la foto de perfil del usuario autenticado
+   *     tags: [Users]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Imagen de perfil
+   *         content:
+   *           image/png:
+   *             schema:
+   *               type: string
+   *               format: binary
+   *           image/jpeg:
+   *             schema:
+   *               type: string
+   *               format: binary
+   *       401:
+   *         description: No autenticado
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *       404:
+   *         description: Foto de perfil no encontrada
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   */
+  router.get('/profile-picture', authMiddleware, (req, res, next) =>
+    userController.getProfilePicture(req, res, next)
   );
 
   return router;

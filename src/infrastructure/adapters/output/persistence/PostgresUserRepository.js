@@ -74,8 +74,8 @@ export class PostgresUserRepository {
   async saveRefreshToken(userId, token) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     const query = `
-      INSERT INTO refresh_tokens (user_id, token, expires_at)
-      VALUES ($1, $2, $3)
+      INSERT INTO refresh_tokens (user_id, token, expires_at, created_at)
+      VALUES ($1, $2, $3, NOW())
     `;
     await pool.query(query, [userId, token, expiresAt]);
   }

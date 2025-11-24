@@ -68,6 +68,12 @@ const options = {
             updatedAt: {
               type: 'string',
               format: 'date-time'
+            },
+            profile_photo: {
+              type: 'string',
+              nullable: true,
+              description: 'URL completa de la imagen de perfil',
+              example: 'https://someday.app/api/users/profile-picture'
             }
           }
         },
