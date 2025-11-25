@@ -22,6 +22,7 @@ const startServer = async () => {
       console.log(`✅ Servidor corriendo en puerto ${PORT}`);
       console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
       console.log(`📊 Base de datos inicializada correctamente`);
+      console.log(`📚 Documentación: http://localhost:${PORT}/api-docs`);
     });
   } catch (error) {
     console.error('❌ Error al iniciar el servidor:', error);

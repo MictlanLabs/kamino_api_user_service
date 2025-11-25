@@ -81,18 +81,7 @@ class DatabaseInitializer {
             
             const scriptPath = path.join(__dirname, 'init.sql');
             const sqlScript = await fs.readFile(scriptPath, 'utf8');
-            
-            // Split script by semicolons and execute each statement
-            const statements = sqlScript
-                .split(';')
-                .map(stmt => stmt.trim())
-                .filter(stmt => stmt.length > 0);
-            
-            for (const statement of statements) {
-                if (statement.trim()) {
-                    await this.sequelize.query(statement);
-                }
-            }
+            await this.sequelize.query(sqlScript);
             
             console.log('Database initialization script executed successfully');
         } catch (error) {
