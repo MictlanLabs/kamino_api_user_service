@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 import { adminMiddleware } from '../middlewares/adminMiddleware.js';
+import { validateUuidParam } from '../middlewares/validationMiddleware.js';
 
 export const createUserRoutes = (userController) => {
   const router = Router();
@@ -84,7 +85,8 @@ export const createUserRoutes = (userController) => {
    *         name: id
    *         required: true
    *         schema:
-   *           type: integer
+    *           type: string
+    *           format: uuid
    *     responses:
    *       200:
    *         description: Usuario encontrado
@@ -99,7 +101,7 @@ export const createUserRoutes = (userController) => {
    *       404:
    *         description: Usuario no encontrado
    */
-  router.get('/:id', authMiddleware, adminMiddleware, (req, res, next) => 
+  router.get('/:id', authMiddleware, adminMiddleware, validateUuidParam('id'), (req, res, next) => 
     userController.getById(req, res, next)
   );
 
@@ -146,7 +148,8 @@ export const createUserRoutes = (userController) => {
    *         name: id
    *         required: true
    *         schema:
-   *           type: integer
+    *           type: string
+    *           format: uuid
    *     requestBody:
    *       required: true
    *       content:
@@ -182,7 +185,7 @@ export const createUserRoutes = (userController) => {
    *       404:
    *         description: Usuario no encontrado
    */
-  router.put('/:id', authMiddleware, adminMiddleware, (req, res, next) => 
+  router.put('/:id', authMiddleware, adminMiddleware, validateUuidParam('id'), (req, res, next) => 
     userController.update(req, res, next)
   );
 
@@ -199,7 +202,8 @@ export const createUserRoutes = (userController) => {
    *         name: id
    *         required: true
    *         schema:
-   *           type: integer
+    *           type: string
+    *           format: uuid
    *     responses:
    *       200:
    *         description: Usuario eliminado
@@ -217,7 +221,7 @@ export const createUserRoutes = (userController) => {
    *       404:
    *         description: Usuario no encontrado
    */
-  router.delete('/:id', authMiddleware, adminMiddleware, (req, res, next) => 
+  router.delete('/:id', authMiddleware, adminMiddleware, validateUuidParam('id'), (req, res, next) => 
     userController.delete(req, res, next)
   );
 

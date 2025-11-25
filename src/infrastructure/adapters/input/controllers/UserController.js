@@ -36,7 +36,7 @@ export class UserController {
 
   async getById(req, res, next) {
     try {
-      const id = parseInt(req.params.id, 10);
+      const id = req.params.id;
       const result = await this.getUserByIdUseCase.execute(id);
       res.status(200).json(result);
     } catch (error) {
@@ -55,7 +55,7 @@ export class UserController {
 
   async update(req, res, next) {
     try {
-      const id = parseInt(req.params.id, 10);
+      const id = req.params.id;
       const result = await this.updateUserUseCase.execute(id, req.body);
       res.status(200).json(result);
     } catch (error) {
@@ -65,7 +65,7 @@ export class UserController {
 
   async delete(req, res, next) {
     try {
-      const id = parseInt(req.params.id, 10);
+      const id = req.params.id;
       const result = await this.deleteUserUseCase.execute(id);
       res.status(200).json(result);
     } catch (error) {
