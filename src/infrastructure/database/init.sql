@@ -31,6 +31,11 @@ ALTER TABLE IF EXISTS users
     ADD COLUMN IF NOT EXISTS profile_photo_url VARCHAR(500),
     ADD COLUMN IF NOT EXISTS gender VARCHAR(20) CHECK (gender IN ('MALE','FEMALE','NON_BINARY','OTHER'));
 
+-- Add new columns: age and favorite_places
+ALTER TABLE IF EXISTS users
+    ADD COLUMN IF NOT EXISTS age INTEGER CHECK (age >= 0 AND age <= 130),
+    ADD COLUMN IF NOT EXISTS favorite_places JSONB DEFAULT '[]'::jsonb;
+
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id SERIAL PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -43,6 +48,8 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_is_active ON users(is_active);
 CREATE INDEX IF NOT EXISTS idx_users_gender ON users(gender);
+-- Optional indexes (skip heavy indexing unless needed)
+-- CREATE INDEX IF NOT EXISTS idx_users_age ON users(age);
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token);
 CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expires_at ON refresh_tokens(expires_at);
@@ -62,6 +69,19 @@ CREATE TRIGGER update_users_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+
+-- Create places_likes table to track likes of places by users
+CREATE TABLE IF NOT EXISTS places_likes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    place_id UUID NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, place_id)
+);
+
+-- Indexes for places_likes
+CREATE INDEX IF NOT EXISTS idx_places_likes_user_id ON places_likes(user_id);
+CREATE INDEX IF NOT EXISTS idx_places_likes_place_id ON places_likes(place_id);
 
 -- Conditional migration: convert integer user IDs to UUIDs and update references
 DO $$

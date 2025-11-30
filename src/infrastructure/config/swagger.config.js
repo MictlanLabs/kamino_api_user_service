@@ -70,6 +70,23 @@ const options = {
               enum: ['MALE','FEMALE','NON_BINARY','OTHER'],
               example: 'MALE'
             },
+            age: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 130,
+              example: 28
+            },
+            favoritePlaces: {
+              type: 'array',
+              items: {
+                type: 'string',
+                format: 'uuid'
+              },
+              example: [
+                '11111111-1111-1111-1111-111111111111',
+                '22222222-2222-2222-2222-222222222222'
+              ]
+            },
             createdAt: {
               type: 'string',
               format: 'date-time'
@@ -108,6 +125,18 @@ const options = {
             gender: {
               type: 'string',
               enum: ['MALE','FEMALE','NON_BINARY','OTHER']
+            },
+            age: {
+              type: 'integer',
+              minimum: 0,
+              maximum: 130
+            },
+            favoritePlaces: {
+              type: 'array',
+              items: {
+                type: 'string',
+                format: 'uuid'
+              }
             }
           }
         },

@@ -1,5 +1,6 @@
 import UserModel from './User.model.js';
 import RefreshTokenModel from './RefreshToken.model.js';
+import PlaceLikeModel from './PlaceLike.model.js';
 
 // Define associations
 UserModel.hasMany(RefreshTokenModel, {
@@ -13,7 +14,19 @@ RefreshTokenModel.belongsTo(UserModel, {
     as: 'user'
 });
 
+UserModel.hasMany(PlaceLikeModel, {
+    foreignKey: 'userId',
+    as: 'placeLikes',
+    onDelete: 'CASCADE'
+});
+
+PlaceLikeModel.belongsTo(UserModel, {
+    foreignKey: 'userId',
+    as: 'user'
+});
+
 export {
     UserModel,
-    RefreshTokenModel
+    RefreshTokenModel,
+    PlaceLikeModel
 };
