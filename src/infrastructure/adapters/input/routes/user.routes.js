@@ -171,6 +171,15 @@ export const createUserRoutes = (userController) => {
    *               gender:
    *                 type: string
    *                 enum: ['MALE','FEMALE','NON_BINARY','OTHER']
+   *               age:
+   *                 type: integer
+   *                 minimum: 0
+   *                 maximum: 130
+   *               favoritePlaces:
+   *                 type: array
+   *                 items:
+   *                   type: string
+   *                   format: uuid
    *     responses:
    *       200:
    *         description: Usuario actualizado

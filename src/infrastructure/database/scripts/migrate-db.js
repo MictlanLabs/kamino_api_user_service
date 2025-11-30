@@ -29,6 +29,28 @@ async function migrateDatabase() {
         await dbInitializer.sequelize.query(`
           CREATE INDEX IF NOT EXISTS idx_users_gender ON users(gender);
         `);
+        // Add age and favorite_places to users
+        await dbInitializer.sequelize.query(`
+          ALTER TABLE IF EXISTS users
+            ADD COLUMN IF NOT EXISTS age INTEGER CHECK (age >= 0 AND age <= 130),
+            ADD COLUMN IF NOT EXISTS favorite_places JSONB DEFAULT '[]'::jsonb;
+        `);
+        // Create places_likes table and indexes
+        await dbInitializer.sequelize.query(`
+          CREATE TABLE IF NOT EXISTS places_likes (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            place_id UUID NOT NULL,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (user_id, place_id)
+          );
+        `);
+        await dbInitializer.sequelize.query(`
+          CREATE INDEX IF NOT EXISTS idx_places_likes_user_id ON places_likes(user_id);
+        `);
+        await dbInitializer.sequelize.query(`
+          CREATE INDEX IF NOT EXISTS idx_places_likes_place_id ON places_likes(place_id);
+        `);
         await dbInitializer.sequelize.query(`
           CREATE TABLE IF NOT EXISTS migrations_log (
             id SERIAL PRIMARY KEY,
@@ -39,8 +61,8 @@ async function migrateDatabase() {
         `);
 
         // Register this migration in migrations_log
-        const name = '2025-11-24_add_user_profile_photo_and_gender';
-        const description = 'Add columns profile_photo_url and gender to users; create migrations_log table';
+        const name = '2025-11-30_add_age_favorite_places_and_places_likes';
+        const description = 'Add users.age and users.favorite_places; create places_likes with indexes';
         try {
             await dbInitializer.sequelize.query(
                 'INSERT INTO migrations_log (name, description) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING',

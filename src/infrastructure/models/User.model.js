@@ -48,6 +48,20 @@ const UserModel = sequelize.define('User', {
     gender: {
         type: DataTypes.STRING(20),
         allowNull: true
+    },
+    age: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        validate: {
+            min: 0,
+            max: 130
+        }
+    },
+    favoritePlaces: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        defaultValue: [],
+        field: 'favorite_places'
     }
 }, {
     tableName: 'users',
